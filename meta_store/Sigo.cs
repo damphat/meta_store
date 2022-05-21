@@ -5,6 +5,7 @@ namespace meta_store
     public partial class Sigo : IReadOnlyDictionary<string, object>
     {
         private Dictionary<string, object> data;
+        private bool frozen;
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
