@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meta_store", "meta_store\meta_store.csproj", "{0ED06672-ADE5-49F1-9A66-331D9B1C28DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meta_store_tests", "..\meta_store_tests\meta_store_tests.csproj", "{F133D646-A0B6-48D5-84AA-9E159C45660F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meta_store_tests", "meta_store_tests\meta_store_tests.csproj", "{F133D646-A0B6-48D5-84AA-9E159C45660F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0ED06672-ADE5-49F1-9A66-331D9B1C28DC} = {0ED06672-ADE5-49F1-9A66-331D9B1C28DC}
 	EndProjectSection

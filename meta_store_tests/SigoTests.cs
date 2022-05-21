@@ -3,12 +3,8 @@ using NUnit.Framework;
 
 namespace meta_store_tests
 {
-    public class Tests
+    public class SigoTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         public void Create()
