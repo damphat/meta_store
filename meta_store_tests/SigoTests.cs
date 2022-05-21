@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using meta_store;
 using NUnit.Framework;
 
 namespace meta_store_tests
