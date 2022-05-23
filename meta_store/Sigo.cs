@@ -1,37 +1,40 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
-namespace meta_store;
-
-public partial class Sigo : IReadOnlyDictionary<string, object>
+namespace meta_store
 {
-    private Dictionary<string, object> data;
-    private bool frozen;
 
-    public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+    public partial class Sigo : IReadOnlyDictionary<string, object>
     {
-        return data.GetEnumerator();
+        private Dictionary<string, object> data;
+        private bool frozen;
+
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable) data).GetEnumerator();
+        }
+
+        public int Count => data.Count;
+
+        public bool ContainsKey(string key)
+        {
+            return data.ContainsKey(key);
+        }
+
+        public bool TryGetValue(string key, out object value)
+        {
+            return data.TryGetValue(key, out value);
+        }
+
+        public object this[string key] => data[key];
+
+        public IEnumerable<string> Keys => ((IReadOnlyDictionary<string, object>) data).Keys;
+
+        public IEnumerable<object> Values => ((IReadOnlyDictionary<string, object>) data).Values;
     }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return ((IEnumerable) data).GetEnumerator();
-    }
-
-    public int Count => data.Count;
-
-    public bool ContainsKey(string key)
-    {
-        return data.ContainsKey(key);
-    }
-
-    public bool TryGetValue(string key, out object value)
-    {
-        return data.TryGetValue(key, out value);
-    }
-
-    public object this[string key] => data[key];
-
-    public IEnumerable<string> Keys => ((IReadOnlyDictionary<string, object>) data).Keys;
-
-    public IEnumerable<object> Values => ((IReadOnlyDictionary<string, object>) data).Values;
 }

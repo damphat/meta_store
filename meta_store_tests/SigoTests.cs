@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using meta_store;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace meta_store_tests
 {
@@ -26,13 +26,13 @@ namespace meta_store_tests
             expectedName = new Dictionary<string, object>
             {
                 {"first", "phat"},
-                {"last", "dam"},
+                {"last", "dam"}
             };
 
             expectedUser = new Dictionary<string, object>
             {
                 {"name", name},
-                {"age", 40},
+                {"age", 40}
             };
         }
 
@@ -40,7 +40,6 @@ namespace meta_store_tests
         public void Create()
         {
             Assert.AreEqual(expectedName, name);
-
         }
 
         [Test]
@@ -64,10 +63,10 @@ namespace meta_store_tests
         public void Set1_not_freeze()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
 
             var s2 = Sigo.Set1(s1, "k2", "v2");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" }, { "k2", "v2" } }, s2);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}, {"k2", "v2"}}, s2);
 
             Assert.AreSame(s1, s2);
         }
@@ -76,13 +75,13 @@ namespace meta_store_tests
         public void Set1_freeze_add()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
 
             Sigo.Freeze(s1);
             Assert.IsTrue(Sigo.IsFrozen(s1));
 
             var s2 = Sigo.Set1(s1, "k2", "v2");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" }, { "k2", "v2" } }, s2);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}, {"k2", "v2"}}, s2);
 
             Assert.AreNotSame(s1, s2);
 
@@ -94,12 +93,12 @@ namespace meta_store_tests
         public void Set1_freeze_change()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
 
             Sigo.Freeze(s1);
 
             var s2 = Sigo.Set1(s1, "k1", "v1_changed");
-            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1_changed" } }, s2);
+            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1_changed"}}, s2);
 
             Assert.AreNotSame(s1, s2);
 
@@ -112,8 +111,8 @@ namespace meta_store_tests
         {
             Assert.AreEqual(new string[] { }, Sigo.ToKeys(""));
             Assert.AreEqual(new string[] { }, Sigo.ToKeys("/"));
-            Assert.AreEqual(new string[] { "a" }, Sigo.ToKeys("/a"));
-            Assert.AreEqual(new string[] { "a", "b" }, Sigo.ToKeys("a/b"));
+            Assert.AreEqual(new[] {"a"}, Sigo.ToKeys("/a"));
+            Assert.AreEqual(new[] {"a", "b"}, Sigo.ToKeys("a/b"));
         }
 
         [Test]
@@ -129,9 +128,12 @@ namespace meta_store_tests
         [Test]
         public void Set()
         {
-            var expected = new Dictionary<string, object> {{
-                "name", new Dictionary<string, object> {{"first", "phat"}}
-            }};
+            var expected = new Dictionary<string, object>
+            {
+                {
+                    "name", new Dictionary<string, object> {{"first", "phat"}}
+                }
+            };
 
             var result = Sigo.Set(null, "name/first", "phat");
 
