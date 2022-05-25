@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace meta_store
 {
-
     public partial class Sigo : IReadOnlyDictionary<string, object>
     {
         private Dictionary<string, object> data;

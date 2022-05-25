@@ -8,7 +8,7 @@ namespace meta_store_tests
     public class StoreTests
     {
         [Test]
-        public void Root()
+        public void Test_root()
         {
             var root = new Store();
             Assert.AreEqual(null, root.Key);
@@ -18,7 +18,7 @@ namespace meta_store_tests
         }
 
         [Test]
-        public void Test_name()
+        public void Test_At_name()
         {
             var root = new Store();
             var name = root.At("name");
@@ -31,7 +31,7 @@ namespace meta_store_tests
         }
 
         [Test]
-        public void Test_name_first()
+        public void Test_At_name_first()
         {
             var root = new Store();
             var first = root.At("name/first");
@@ -93,16 +93,5 @@ namespace meta_store_tests
             Assert.AreEqual(Sigo.Create("name", Sigo.Create("first", "phat")), first.Root.Get());
         }
 
-        [Test]
-        public void Test_listeners()
-        {
-            var root = new Store();
-            root.Set("1");
-            var ret = new List<object>();
-            
-            root.AddListener(v => ret.Add(v));
-
-            Assert.AreEqual(new [] {"1"}, ret);
-        }
     }
 }

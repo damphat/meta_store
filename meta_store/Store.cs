@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace meta_store
 {
-    public class Store
+    public partial class Store
     {
         public Store Parent => parent;
 
@@ -51,8 +50,6 @@ namespace meta_store
         private Store parent;
         private string key;
         private Dictionary<string, Store> children;
-        private HashSet<Action<object>> listeners;
-        private HashSet<Action<object>> childListeners;
 
         public Store At1(string key)
         {
@@ -112,6 +109,7 @@ namespace meta_store
             if (this.state != value)
             {
                 this.state = value;
+                dirty++;
                 SetDown();
                 SetUp();
             }
@@ -126,24 +124,10 @@ namespace meta_store
                 if (child.Value.state != v)
                 {
                     child.Value.state = v;
+                    child.Value.dirty++; 
                     child.Value.SetUp();
-
                 }
             }
-        }
-
-        public void AddListener(Action<object> action)
-        {
-            // TODO send first value?
-            // TODO numberOfListenerInChildren
-            // TODO unsubcriber
-            // TODO allow duplication
-            listeners.Add(action);
-        }
-
-        public void RemoveListener(Action<object> action)
-        {
-            listeners.Remove(action);
         }
 
         void SetDown()
@@ -152,6 +136,7 @@ namespace meta_store
             if (p != null)
             {
                 p.state = Sigo.Set1(p.state, key, state);
+                p.dirty++;
                 p.SetDown();
             }
         }

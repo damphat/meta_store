@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace meta_store
 {
-
     partial class Sigo
     {
         public static object Create(params object[] keys)
