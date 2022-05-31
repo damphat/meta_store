@@ -5,8 +5,14 @@ namespace meta_store
 {
     public partial class Sigo : IReadOnlyDictionary<string, object>
     {
-        private Dictionary<string, object> data;
-        private bool frozen;
+        private readonly Dictionary<string, object> data;
+        private int flag;
+
+        private Sigo(Dictionary<string, object> data, int flag)
+        {
+            this.data = data;
+            this.flag = flag;
+        }
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
