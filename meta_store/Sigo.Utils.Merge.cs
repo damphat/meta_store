@@ -117,7 +117,7 @@ namespace meta_store
                     if (eqa && (ret.Count == a.Count)) return a;
                     if (eqb && (ret.Count == b.Count)) return b;
                     return ret;
-                } 
+                }
 
                 return ret;
 

@@ -11,7 +11,6 @@ namespace meta_store
 
         public static object Create(int flag) => Elements[flag & 7];
 
-        // TODO 
         public static object Create1(int flag, params object[] kvs)
         {
             Debug.Assert(kvs.Length % 2 == 0);
@@ -215,9 +214,9 @@ namespace meta_store
             return (GetFlag(obj) & 1) == 0;
         }
 
-        public static object Set(object obj, string[] keys, int from, object value)
+        public static object Set(object obj, IReadOnlyList<string> keys, int from, object value)
         {
-            if (from >= keys.Length) return value;
+            if (from >= keys.Count) return value;
             var key = keys[from];
 
             return Set1(obj, key, Set(Get1(obj, key), keys, from + 1, value));
