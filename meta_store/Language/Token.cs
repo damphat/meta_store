@@ -1,8 +1,11 @@
-﻿namespace Sigobase.Language {
-    public class Token {
+﻿namespace meta_store.Language
+{
+    public class Token
+    {
         private string raw;
 
-        public Token(Kind kind, string src, int start, int end, int separator, object value = null) {
+        public Token(Kind kind, string src, int start, int end, int separator, object value = null)
+        {
             Kind = kind;
             Src = src;
             Start = start;
@@ -21,11 +24,13 @@
 
         public object Value { get; private set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return $"{Kind}:'{Raw}'";
         }
 
-        public void Reset(Kind kind, string src, in int start, in int end, in int separator, object value = null) {
+        public void Reset(Kind kind, string src, in int start, in int end, in int separator, object value = null)
+        {
             Kind = kind;
             Src = src;
             Start = start;

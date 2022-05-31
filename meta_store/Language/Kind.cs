@@ -1,5 +1,7 @@
-﻿namespace Sigobase.Language {
-    public enum Kind {
+﻿namespace meta_store.Language
+{
+    public enum Kind
+    {
         Number,
         String,
         Identifier,

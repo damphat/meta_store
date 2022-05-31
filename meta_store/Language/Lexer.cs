@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Text;
-using Sigobase.Language.Utils;
+using meta_store.Language.Utils;
 
-namespace Sigobase.Language {
-    public class Lexer {
+namespace meta_store.Language
+{
+    public class Lexer
+    {
         private const char Eof = char.MaxValue;
         private readonly string src;
         private int start;
@@ -15,7 +17,8 @@ namespace Sigobase.Language {
         private char quote;
         private readonly StringBuilder sb = new StringBuilder();
 
-        public Lexer(string src) {
+        public Lexer(string src)
+        {
             this.src = src;
             start = 0;
             end = 0;
@@ -23,43 +26,55 @@ namespace Sigobase.Language {
             c = end < src.Length ? src[end] : Eof;
         }
 
-        private void Next() {
+        private void Next()
+        {
             c = ++end < src.Length ? src[end] : Eof;
         }
 
-        private void Next(int n) {
+        private void Next(int n)
+        {
             end += n;
             c = end < src.Length ? src[end] : Eof;
         }
 
-        private char Peek(int i) {
+        private char Peek(int i)
+        {
             i += end;
             return i < src.Length ? src[i] : Eof;
         }
 
 
-        private void ScanLineComment() {
+        private void ScanLineComment()
+        {
             Next(2);
-            while (c != '\r' && c != '\n' && c != Eof) {
+            while (c != '\r' && c != '\n' && c != Eof)
+            {
                 Next();
             }
         }
 
-        private void ScanBlockComment() {
+        private void ScanBlockComment()
+        {
             Next(2);
 
             // search for */ or eof
-            while (true) {
-                switch (c) {
-                    case '*': {
-                        Next();
-                        if (c == '/') {
+            while (true)
+            {
+                switch (c)
+                {
+                    case '*':
+                        {
                             Next();
-                            return; // OK
-                        } else {
-                            continue;   // goto */ | eof
+                            if (c == '/')
+                            {
+                                Next();
+                                return; // OK
+                            }
+                            else
+                            {
+                                continue;   // goto */ | eof
+                            }
                         }
-                    }
                     case Eof:
                         return; // unexpected eof
                     default:
@@ -69,10 +84,13 @@ namespace Sigobase.Language {
             }
         }
 
-        private void ScanSeparator() {
+        private void ScanSeparator()
+        {
             separator = 0;
-            while (true) {
-                switch (c) {
+            while (true)
+            {
+                switch (c)
+                {
                     case ' ':
                     case '\t':
                         separator |= 1;
@@ -84,33 +102,37 @@ namespace Sigobase.Language {
                         Next();
                         break;
 
-                    case '/': {
-                        switch (Peek(1)) {
-                            case '/':
-                                ScanLineComment();
-                                break;
-                            case '*':
-                                ScanBlockComment();
-                                break;
-                            default:
-                                return; //  slash 
-                        }
+                    case '/':
+                        {
+                            switch (Peek(1))
+                            {
+                                case '/':
+                                    ScanLineComment();
+                                    break;
+                                case '*':
+                                    ScanBlockComment();
+                                    break;
+                                default:
+                                    return; //  slash 
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     default:
                         return;  // not space & not slash
                 }
             }
         }
 
-        public Token Read(Token token) {
+        public Token Read(Token token)
+        {
             this.token = token;
             ScanSeparator();
 
             start = end;
 
-            switch (c) {
+            switch (c)
+            {
                 case '+': return CharToken(Kind.Plus);
                 case '-': return CharToken(Kind.Minus);
                 case '*': return CharToken(Kind.Mul);
@@ -128,31 +150,38 @@ namespace Sigobase.Language {
                 case ':': return CharToken(Kind.Colon);
                 case '?': return CharToken(Kind.Question);
 
-                case '!': {
-                    switch (Peek(1)) {
-                        case '=': return TwoCharToken(Kind.NotEq);
-                    }
+                case '!':
+                    {
+                        switch (Peek(1))
+                        {
+                            case '=': return TwoCharToken(Kind.NotEq);
+                        }
 
-                    return CharToken(Kind.Not);
-                }
-                case '=': {
-                    switch (Peek(1)) {
-                        case '=': return TwoCharToken(Kind.EqEq);
+                        return CharToken(Kind.Not);
                     }
-                    return CharToken(Kind.Eq);
-                }
+                case '=':
+                    {
+                        switch (Peek(1))
+                        {
+                            case '=': return TwoCharToken(Kind.EqEq);
+                        }
+                        return CharToken(Kind.Eq);
+                    }
                 case '"':
                 case '\'': return StringToken();
                 default:
-                    if (Chars.IsDigit(c)) {
+                    if (Chars.IsDigit(c))
+                    {
                         return NumberToken();
                     }
 
-                    if (Chars.IsIdentifierStart(c)) {
+                    if (Chars.IsIdentifierStart(c))
+                    {
                         return IdentifierToken();
                     }
 
-                    if (c == Eof) {
+                    if (c == Eof)
+                    {
                         return CreateToken(Kind.Eof);
                     }
 
@@ -160,30 +189,38 @@ namespace Sigobase.Language {
             }
         }
 
-        private Token CreateToken(Kind kind, object value = null) {
-            if (token == null) {
+        private Token CreateToken(Kind kind, object value = null)
+        {
+            if (token == null)
+            {
                 return new Token(kind, src, start, end, separator, value);
-            } else {
+            }
+            else
+            {
                 token.Reset(kind, src, start, end, separator, value);
                 return token;
             }
         }
 
-        private Token IdentifierToken() {
+        private Token IdentifierToken()
+        {
             Next();
-            while (Chars.IsIdentifierPart(c)) {
+            while (Chars.IsIdentifierPart(c))
+            {
                 Next();
             }
 
             return CreateToken(Kind.Identifier);
         }
 
-        private Token CharToken(Kind kind) {
+        private Token CharToken(Kind kind)
+        {
             Next();
             return CreateToken(kind);
         }
 
-        private Token TwoCharToken(Kind kind) {
+        private Token TwoCharToken(Kind kind)
+        {
             Next(2);
             return CreateToken(kind);
         }
@@ -192,34 +229,43 @@ namespace Sigobase.Language {
         // 1E1000 => -Infinity (netcore vs net framework)
         // TODO parse 1_000
         // TODO parse 0xffff
-        private Token NumberToken() {
+        private Token NumberToken()
+        {
             Next();
-            while (Chars.IsDigit(c)) {
+            while (Chars.IsDigit(c))
+            {
                 Next();
             }
 
-            if (c == '.') {
+            if (c == '.')
+            {
                 var c1 = Peek(1);
-                if (Chars.IsDigit(c1)) {
+                if (Chars.IsDigit(c1))
+                {
                     Next(2);
-                    while (Chars.IsDigit(c)) {
+                    while (Chars.IsDigit(c))
+                    {
                         Next();
                     }
                 }
             }
 
-            if (c == 'e' || c == 'E') {
+            if (c == 'e' || c == 'E')
+            {
                 var n = 1;
                 var cn = Peek(n);
-                if (cn == '+' || cn == '-') {
+                if (cn == '+' || cn == '-')
+                {
                     n++;
                 }
                 cn = Peek(n);
-                if (Chars.IsDigit(cn)) {
+                if (Chars.IsDigit(cn))
+                {
                     n++;
                 }
                 Next(n);
-                while (Chars.IsDigit(c)) {
+                while (Chars.IsDigit(c))
+                {
                     Next();
                 }
             }
@@ -229,14 +275,17 @@ namespace Sigobase.Language {
             return CreateToken(Kind.Number, value);
         }
 
-        private void ScanStringEscape() {
+        private void ScanStringEscape()
+        {
             Next();
-            switch (c) {
+            switch (c)
+            {
                 case Eof:
                     throw new Exception("UnterminatedStringLiteral");
                 case '\r':
                     Next();
-                    if (c == '\n') {
+                    if (c == '\n')
+                    {
                         Next();
                     }
 
@@ -281,19 +330,26 @@ namespace Sigobase.Language {
                     Next();
                     var u = 0;
                     var i = 0;
-                    for (; i < 4; i++) {
+                    for (; i < 4; i++)
+                    {
                         var h = SigoConverter.TryConvertHexChar2Int(c);
-                        if (h >= 0) {
+                        if (h >= 0)
+                        {
                             Next();
                             u = u * 16 + h;
-                        } else {
+                        }
+                        else
+                        {
                             break;
                         }
                     }
 
-                    if (i == 4) {
-                        sb.Append((char) u);
-                    } else {
+                    if (i == 4)
+                    {
+                        sb.Append((char)u);
+                    }
+                    else
+                    {
                         throw new Exception("HexadecimalDigitExpected");
                     }
 
@@ -305,24 +361,30 @@ namespace Sigobase.Language {
             } // switch (the letter after \)
         }
 
-        private Token StringToken() {
+        private Token StringToken()
+        {
             quote = c;
             sb.Clear();
 
             Next();
 
-            while (true) {
-                switch (c) {
+            while (true)
+            {
+                switch (c)
+                {
                     case Eof:
                     case '\r':
                     case '\n':
                         throw new Exception("UnterminatedStringLiteral");
                     case '"':
                     case '\'':
-                        if (c == quote) {
+                        if (c == quote)
+                        {
                             Next();
                             return CreateToken(Kind.String, sb.ToString()); // OK
-                        } else {
+                        }
+                        else
+                        {
                             sb.Append(c);
                             Next();
                             continue;

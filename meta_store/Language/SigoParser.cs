@@ -3,27 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Sigobase.Language {
-    public class SigoParser {
+namespace meta_store.Language
+{
+    public class SigoParser
+    {
         private readonly PeekableLexer lexer;
         private object global = Sigo.Create(3);
         private Token t;
 
-        public SigoParser(string src) {
+        public SigoParser(string src)
+        {
             lexer = new PeekableLexer(src, 0, 1); // Peek(0), Peek(1)
             t = lexer.Peek(0);
         }
 
-        private string Expected(string thing) {
+        private string Expected(string thing)
+        {
             return $"{thing} expected, found {(t.Kind == Kind.Eof ? "eof" : $"'{t.Raw}'")} at {t.Start}";
         }
 
-        private void Next() {
+        private void Next()
+        {
             lexer.Move(1);
             t = lexer.Peek(0);
         }
 
-        public object Parse() {
+        public object Parse()
+        {
             return Sigo.From(ParseStatements());
         }
 
@@ -34,31 +40,37 @@ namespace Sigobase.Language {
         //    return ret;
         //}
 
-        private List<object> ParseArray() {
+        private List<object> ParseArray()
+        {
             Next();
             var list = new List<object>();
-            if (t.Kind == Kind.CloseBracket) {
+            if (t.Kind == Kind.CloseBracket)
+            {
                 Next();
                 return list;
             }
 
-            while (true) {
+            while (true)
+            {
                 list.Add(ParseValue());
 
                 var sep = ParseObjectSeparator();
 
-                if (t.Kind == Kind.CloseBracket) {
+                if (t.Kind == Kind.CloseBracket)
+                {
                     Next();
                     return list;
                 }
 
-                if (sep == 0) {
+                if (sep == 0)
+                {
                     throw new Exception(Expected("','"));
                 }
             }
         }
 
-        private object ParseAssignment() {
+        private object ParseAssignment()
+        {
             var key = t.Raw;
             Next();
             Next();
@@ -67,15 +79,19 @@ namespace Sigobase.Language {
             return value;
         }
 
-        private double ParseDouble() {
-            if (t.Kind == Kind.Number) {
-                var d = (double) t.Value;
+        private double ParseDouble()
+        {
+            if (t.Kind == Kind.Number)
+            {
+                var d = (double)t.Value;
                 Next();
                 return d;
             }
 
-            if (t.Kind == Kind.Identifier) {
-                switch (t.Raw) {
+            if (t.Kind == Kind.Identifier)
+            {
+                switch (t.Raw)
+                {
                     case "Infinity":
                         Next();
                         return double.PositiveInfinity;
@@ -88,13 +104,16 @@ namespace Sigobase.Language {
             throw new Exception(Expected("number"));
         }
 
-        private object ParseIdentifier() {
-            if (lexer.Peek(1).Kind == Kind.Eq) {
+        private object ParseIdentifier()
+        {
+            if (lexer.Peek(1).Kind == Kind.Eq)
+            {
                 return ParseAssignment(); // return ISigo?
             }
 
             var raw = t.Raw;
-            switch (raw) {
+            switch (raw)
+            {
                 case "true":
                     Next();
                     return true;
@@ -108,7 +127,8 @@ namespace Sigobase.Language {
                     Next();
                     return double.PositiveInfinity;
                 default:
-                    if (((Sigo)global).TryGetValue(raw, out var value)) {
+                    if (((Sigo)global).TryGetValue(raw, out var value))
+                    {
                         Next();
                         return value;
                     }
@@ -117,84 +137,107 @@ namespace Sigobase.Language {
             }
         }
 
-        private object ParseNumber() {
+        private object ParseNumber()
+        {
             var ret = t.Value;
             Next();
             return ret;
         }
 
-        private object ParseObject() {
+        private object ParseObject()
+        {
             Next();
             var f = ParseObjectFlag();
             var ret = Sigo.Create(f ?? 3);
 
-            if (f != null) {
+            if (f != null)
+            {
                 var sep = ParseObjectSeparator();
-                if (t.Kind == Kind.Close) {
+                if (t.Kind == Kind.Close)
+                {
                     Next();
                     return ret;
                 }
 
-                if (sep == 0) {
+                if (sep == 0)
+                {
                     throw new Exception(Expected("','"));
                 }
-            } else {
-                if (t.Kind == Kind.Close) {
+            }
+            else
+            {
+                if (t.Kind == Kind.Close)
+                {
                     Next();
                     return ret;
                 }
             }
 
-            while (true) {
+            while (true)
+            {
                 var keys = ParseObjectKeys();
-                if (keys == null) {
+                if (keys == null)
+                {
                     throw new Exception(Expected("key"));
                 }
 
-                if (t.Kind == Kind.Colon) {
+                if (t.Kind == Kind.Colon)
+                {
                     Next();
                     var value = Sigo.From(ParseValue());
                     ret = Sigo.Set(ret, keys, 0, value);
-                } else {
+                }
+                else
+                {
                     var last = keys[keys.Count - 1];
-                    if (((Sigo)global).TryGetValue(last, out var value)) {
+                    if (((Sigo)global).TryGetValue(last, out var value))
+                    {
                         ret = Sigo.Set(ret, keys, 0, value);
-                    } else {
+                    }
+                    else
+                    {
                         throw new Exception(Expected($"':' after {string.Join("/", keys)} "));
                     }
                 }
 
                 var sep = ParseObjectSeparator();
 
-                if (t.Kind == Kind.Close) {
+                if (t.Kind == Kind.Close)
+                {
                     Next();
                     return ret;
                 }
 
-                if (sep == 0) {
+                if (sep == 0)
+                {
                     throw new Exception(Expected("','"));
                 }
             }
         }
 
-        private int? ParseObjectFlag() {
-            if (t.Kind != Kind.Number) {
+        private int? ParseObjectFlag()
+        {
+            if (t.Kind != Kind.Number)
+            {
                 return null;
             }
 
             var k1 = lexer.Peek(1).Kind;
-            if (k1 == Kind.Colon || k1 == Kind.Div) {
+            if (k1 == Kind.Colon || k1 == Kind.Div)
+            {
                 return null;
             }
 
             var raw = t.Raw;
-            if (raw.Length != 1) {
+            if (raw.Length != 1)
+            {
                 return null;
             }
 
             var f = raw[0];
 
-            if (f < '0' || f > '7') {
+            if (f < '0' || f > '7')
+            {
                 return null;
             }
 
@@ -204,25 +247,30 @@ namespace Sigobase.Language {
         }
 
         // return null | string | string[]
-        private object ParseObjectKey() {
+        private object ParseObjectKey()
+        {
             string key;
-            if (t.Kind == Kind.Identifier) {
+            if (t.Kind == Kind.Identifier)
+            {
                 key = t.Raw;
                 Next();
                 return key;
             }
 
-            if (t.Kind == Kind.Number) {
-                key = ((double) t.Value).ToString(CultureInfo.InvariantCulture);
+            if (t.Kind == Kind.Number)
+            {
+                key = ((double)t.Value).ToString(CultureInfo.InvariantCulture);
                 Next();
                 return key;
             }
 
-            if (t.Kind == Kind.String) {
-                key = (string) t.Value;
+            if (t.Kind == Kind.String)
+            {
+                key = (string)t.Value;
                 Next();
-                if (key.Contains("/")) {
-                    return key.Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                if (key.Contains("/"))
+                {
+                    return key.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 }
 
                 return key;
@@ -232,31 +280,42 @@ namespace Sigobase.Language {
         }
 
         // TODO gc problem
-        private List<string> ParseObjectKeys() {
+        private List<string> ParseObjectKeys()
+        {
             var key = ParseObjectKey();
-            if (key == null) {
+            if (key == null)
+            {
                 return null;
             }
 
             var keys = new List<string>();
-            if (key is string s) {
-                if (s != "") {
+            if (key is string s)
+            {
+                if (s != "")
+                {
                     keys.Add(s);
                 }
-            } else if (key is string[] ss) {
+            }
+            else if (key is string[] ss)
+            {
                 keys.AddRange(ss);
             }
 
-            while (t.Kind == Kind.Div) {
+            while (t.Kind == Kind.Div)
+            {
                 Next();
                 key = ParseObjectKey();
-                if (key == null) {
+                if (key == null)
+                {
                     throw new Exception(Expected("key"));
                 }
 
-                if (key is string) {
-                    keys.Add((string) key);
-                } else if (key is string[] ss) {
+                if (key is string)
+                {
+                    keys.Add((string)key);
+                }
+                else if (key is string[] ss)
+                {
                     keys.AddRange(ss);
                 }
             }
@@ -264,8 +323,10 @@ namespace Sigobase.Language {
             return keys;
         }
 
-        private int ParseObjectSeparator() {
-            if (t.Kind == Kind.Comma || t.Kind == Kind.SemiColon) {
+        private int ParseObjectSeparator()
+        {
+            if (t.Kind == Kind.Comma || t.Kind == Kind.SemiColon)
+            {
                 Next();
                 return 4;
             }
@@ -273,35 +334,43 @@ namespace Sigobase.Language {
             return t.Separator;
         }
 
-        private object ParseStatements() {
+        private object ParseStatements()
+        {
             object ret = null;
-            while (true) {
-                if (t.Kind == Kind.Eof) {
+            while (true)
+            {
+                if (t.Kind == Kind.Eof)
+                {
                     return ret;
                 }
 
                 ret = ParseValue();
-                if (t.Kind == Kind.SemiColon) {
+                if (t.Kind == Kind.SemiColon)
+                {
                     Next();
                 }
             }
         }
 
-        private object ParseString() {
+        private object ParseString()
+        {
             var ret = t.Value;
             Next();
             return ret;
         }
 
-        private object ParseUnary() {
+        private object ParseUnary()
+        {
             var k = t.Kind;
             Next();
             var d = ParseDouble();
             return k == Kind.Minus ? -d : d;
         }
 
-        private object ParseValue() {
-            switch (t.Kind) {
+        private object ParseValue()
+        {
+            switch (t.Kind)
+            {
                 case Kind.Plus:
                 case Kind.Minus: return ParseUnary();
                 case Kind.Number: return ParseNumber();

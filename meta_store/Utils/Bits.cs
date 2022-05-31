@@ -1,4 +1,4 @@
-﻿namespace meta_store
+﻿namespace meta_store.Utils
 {
     /// <summary>
     /// Flags constants and methods

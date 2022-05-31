@@ -1,10 +1,9 @@
-﻿using meta_store;
-using System.Collections;
+﻿using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Sigobase.Utils
+namespace meta_store.Utils
 {
     public class Writer
     {
@@ -59,13 +58,13 @@ namespace Sigobase.Utils
         private Writer(bool ignoreFlag, string indent, bool keyQuoted, string colon, string comma, bool trailComma,
             char quote)
         {
-            this.IgnoreFlag = ignoreFlag;
-            this.Indent = indent;
-            this.KeyQuoted = keyQuoted;
-            this.Colon = colon;
-            this.Comma = comma;
-            this.TrailComma = trailComma;
-            this.Quote = quote;
+            IgnoreFlag = ignoreFlag;
+            Indent = indent;
+            KeyQuoted = keyQuoted;
+            Colon = colon;
+            Comma = comma;
+            TrailComma = trailComma;
+            Quote = quote;
         }
 
         private Writer() : this(

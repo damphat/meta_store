@@ -2,10 +2,10 @@
 using System.Globalization;
 using System.Linq;
 
-namespace Sigobase.Utils
+namespace meta_store.Utils
 {
     // TODO int to string cache
-    public static class Paths
+    internal static class Paths
     {
         public static void CheckKey(string key)
         {
