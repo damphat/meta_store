@@ -13,9 +13,11 @@ namespace meta_win
         {
             try
             {
-               var s = Sigo.Parse(src);
+                var s = Sigo.Parse(src);
                 return Sigo.ToString(s);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return e.Message;
             }
         }

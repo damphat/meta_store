@@ -61,7 +61,7 @@ namespace meta_store_tests
         {
             var root = new Store();
             Assert.AreEqual(0, root.dirty);
-            
+
             // null to null
             root.Set(null);
             Assert.AreEqual(0, root.dirty);

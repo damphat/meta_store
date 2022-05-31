@@ -32,9 +32,9 @@ namespace meta_store
         public static object From(object o)
         {
             switch (o)
-            {                
+            {
                 case Sigo sigo:
-                    return sigo;                
+                    return sigo;
                 case string s: return s;
                 case IDictionary dict:
                     return From(dict);

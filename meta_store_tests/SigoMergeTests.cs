@@ -37,7 +37,7 @@ namespace meta_store_tests
 
             Assert.AreEqual(true, Sigo.IsUpdate(update));
         }
-        
+
         [Test]
         public void MergeTest_xb_return_b()
         {

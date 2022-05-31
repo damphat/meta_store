@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace meta_store
 {
     public class Cache
     {
         readonly List<KeyValuePair<string, object>> list = new List<KeyValuePair<string, object>>();
-        readonly Stack<int> indexes = new Stack<int> ();
+        readonly Stack<int> indexes = new Stack<int>();
         public void Push()
         {
             indexes.Push(list.Count);
@@ -21,7 +19,7 @@ namespace meta_store
         public object Pop(object a)
         {
 
-            var from = indexes.Pop();            
+            var from = indexes.Pop();
             while (from < list.Count)
             {
                 var e = list[from];

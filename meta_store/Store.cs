@@ -121,7 +121,7 @@ namespace meta_store
                 if (child.Value.state != v)
                 {
                     child.Value.state = v;
-                    child.Value.dirty++; 
+                    child.Value.dirty++;
                     child.Value.SetUp();
                 }
             }

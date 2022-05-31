@@ -1,4 +1,5 @@
-﻿using System;
+﻿using meta_store.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -234,11 +235,11 @@ namespace meta_store
                 return Set1(obj, path, value);
             }
 
-            var keys = path.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
-            
+            var keys = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
             return Set(obj, keys, 0, value);
         }
-        
+
         /// <summary>
         /// Detect if a sigo which has children are itself
         /// </summary>
@@ -314,7 +315,7 @@ namespace meta_store
         /// <summary>
         /// Deep equals
         /// </summary>
-        public new static bool Equals(object a, object b)
+        public static new bool Equals(object a, object b)
         {
             if (a is Sigo sa && b is Sigo sb) return Equals(sa, sb);
             return object.Equals(a, b);
@@ -322,7 +323,7 @@ namespace meta_store
 
         public static bool Is(object a, object b)
         {
-            if (a is Sigo  || b is Sigo ) return ReferenceEquals(a, b);
+            if (a is Sigo || b is Sigo) return ReferenceEquals(a, b);
             return object.Equals(a, b);
         }
     }

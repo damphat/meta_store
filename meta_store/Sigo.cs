@@ -21,7 +21,7 @@ namespace meta_store
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable) data).GetEnumerator();
+            return ((IEnumerable)data).GetEnumerator();
         }
 
         public int Count => data.Count;
@@ -38,8 +38,8 @@ namespace meta_store
 
         public object this[string key] => data[key];
 
-        public IEnumerable<string> Keys => ((IReadOnlyDictionary<string, object>) data).Keys;
+        public IEnumerable<string> Keys => ((IReadOnlyDictionary<string, object>)data).Keys;
 
-        public IEnumerable<object> Values => ((IReadOnlyDictionary<string, object>) data).Values;
+        public IEnumerable<object> Values => ((IReadOnlyDictionary<string, object>)data).Values;
     }
 }

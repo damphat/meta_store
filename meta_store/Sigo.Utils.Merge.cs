@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using meta_store.Utils;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace meta_store
@@ -39,10 +40,11 @@ namespace meta_store
             {
                 if (rf < 256) return Elements[rf & 7];
 
-                if(Bits.IsFrozen(rf))
+                if (Bits.IsFrozen(rf))
                 {
                     return new Sigo(new Dictionary<string, object>(sigo.data), Bits.RemoveFrozen(rf));
-                } else
+                }
+                else
                 {
                     sigo.flag = rf;
                 }
@@ -86,7 +88,7 @@ namespace meta_store
                     }
                     if (eqa && (ret.Count == a.Count)) return a; // {x:1, y:1} * {x: 1} =  {x:1}
                     if (eqb) return b; // {x:1, y:1} * {x: 1} =  {x:1}
-                    return ret;                    
+                    return ret;
                 }
 
                 return ret;

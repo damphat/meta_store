@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using meta_store;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace meta_store_tests
 {
@@ -44,7 +44,7 @@ namespace meta_store_tests
                 Assert.AreEqual(i + 16, Sigo.GetFlag(Sigo.Create(i)));
             }
         }
-        
+
 
         [Test]
         public void Get1()
@@ -58,10 +58,10 @@ namespace meta_store_tests
         public void Set1_not_freeze()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
 
             var s2 = Sigo.Set1(s1, "k2", "v2");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}, {"k2", "v2"}}, s2);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" }, { "k2", "v2" } }, s2);
 
             Assert.AreSame(s1, s2);
         }
@@ -70,13 +70,13 @@ namespace meta_store_tests
         public void Set1_freeze_add()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
 
             Sigo.Freeze(s1);
             Assert.IsTrue(Sigo.IsFrozen(s1));
 
             var s2 = Sigo.Set1(s1, "k2", "v2");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}, {"k2", "v2"}}, s2);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" }, { "k2", "v2" } }, s2);
 
             Assert.AreNotSame(s1, s2);
 
@@ -88,12 +88,12 @@ namespace meta_store_tests
         public void Set1_freeze_change()
         {
             var s1 = Sigo.Set1(null, "k1", "v1");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1"}}, s1);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1" } }, s1);
 
             Sigo.Freeze(s1);
 
             var s2 = Sigo.Set1(s1, "k1", "v1_changed");
-            Assert.AreEqual(new Dictionary<string, object> {{"k1", "v1_changed"}}, s2);
+            Assert.AreEqual(new Dictionary<string, object> { { "k1", "v1_changed" } }, s2);
 
             Assert.AreNotSame(s1, s2);
 

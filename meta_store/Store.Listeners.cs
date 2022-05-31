@@ -7,9 +7,9 @@ namespace meta_store
     // ISSUE: should handler receive current values or waiting for the next value?
     partial class Store
     {
-        private object diff;
+        private readonly object diff;
         private HashSet<Action<object>> listeners;
-        private HashSet<Action<object>> childListeners;
+        private readonly HashSet<Action<object>> childListeners;
         internal int listenerCount;
 
         internal int dirty;
