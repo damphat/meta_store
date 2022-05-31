@@ -8,13 +8,9 @@ namespace meta_store_tests
         [Test]
         public void Test_listenersCount()
         {
-            static void h1(object v)
-            {
-            }
+            static void h1(object v) { }
 
-            static void h2(object v)
-            {
-            }
+            static void h2(object v) { }
 
             var root = new Store();
             Assert.AreEqual(0, root.listenerCount);
@@ -37,13 +33,9 @@ namespace meta_store_tests
         [Test]
         public void Test_listenersCount_name()
         {
-            static void h1(object v)
-            {
-            }
+            static void h1(object v) { }
 
-            static void h2(object v)
-            {
-            }
+            static void h2(object v) { }
 
             var root = new Store();
             var name = root.At("user/name");
@@ -112,13 +104,13 @@ namespace meta_store_tests
             var name = root.At("name");
             Assert.AreEqual(0, name.dirty);
 
-            name.Set(Sigo.Create("name", null));
+            name.Set(Sigo.State("name", null));
             Assert.AreEqual(0, name.dirty);
 
-            name.Set(Sigo.Create("name", "1"));
+            name.Set(Sigo.State("name", "1"));
             Assert.AreEqual(1, name.dirty);
 
-            name.Set(Sigo.Create("name", "2"));
+            name.Set(Sigo.State("name", "2"));
             Assert.AreEqual(2, name.dirty);
         }
     }

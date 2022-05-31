@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using meta_store;
-using Microsoft.VisualBasic;
+﻿using meta_store;
 using NUnit.Framework;
 
 namespace meta_store_tests
@@ -63,7 +61,7 @@ namespace meta_store_tests
 
             Assert.AreEqual("phat", name.Get());
 
-            Assert.AreEqual(Sigo.Create("name", "phat"), root.Get());
+            Assert.AreEqual(Sigo.State("name", "phat"), root.Get());
         }
 
         [Test]
@@ -75,9 +73,9 @@ namespace meta_store_tests
             first.Set("phat");
 
             Assert.AreEqual("phat", first.Get());
-            Assert.AreEqual(Sigo.Create("first", "phat"), first.Parent.Get());
+            Assert.AreEqual(Sigo.State("first", "phat"), first.Parent.Get());
 
-            Assert.AreEqual(Sigo.Create("name", Sigo.Create("first", "phat")), first.Root.Get());
+            Assert.AreEqual(Sigo.State("name", Sigo.State("first", "phat")), first.Root.Get());
         }
 
         [Test]
@@ -86,11 +84,11 @@ namespace meta_store_tests
             var root = new Store();
             var first = root.At("name/first");
 
-            root.Set(Sigo.Create("name", Sigo.Create("first", "phat")));
+            root.Set(Sigo.State("name", Sigo.State("first", "phat")));
 
             Assert.AreEqual("phat", first.Get());
-            Assert.AreEqual(Sigo.Create("first", "phat"), first.Parent.Get());
-            Assert.AreEqual(Sigo.Create("name", Sigo.Create("first", "phat")), first.Root.Get());
+            Assert.AreEqual(Sigo.State("first", "phat"), first.Parent.Get());
+            Assert.AreEqual(Sigo.State("name", Sigo.State("first", "phat")), first.Root.Get());
         }
 
     }

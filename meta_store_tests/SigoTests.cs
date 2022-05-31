@@ -15,11 +15,11 @@ namespace meta_store_tests
         [SetUp]
         public void Setup()
         {
-            name = Sigo.Create(
+            name = Sigo.State(
                 "first", "phat",
                 "last", "dam");
 
-            user = Sigo.Create(
+            user = Sigo.State(
                 "name", name,
                 "age", 40);
 
@@ -39,24 +39,19 @@ namespace meta_store_tests
         [Test]
         public void Create()
         {
-            Assert.AreEqual(expectedName, name);
+            for (int i = 0; i < 8; i++)
+            {
+                Assert.AreEqual(i + 16, Sigo.GetFlag(Sigo.Create(i)));
+            }
         }
-
-        [Test]
-        public void KeyValidation()
-        {
-            Sigo.KeyValidate("a_key");
-            Assert.Catch(() => Sigo.KeyValidate(null));
-            Assert.Catch(() => Sigo.KeyValidate(""));
-            Assert.Catch(() => Sigo.KeyValidate("a/b"));
-        }
+        
 
         [Test]
         public void Get1()
         {
-            Assert.AreEqual(null, Sigo.Get1("a_leaf", "a_key"));
+            Assert.AreEqual(Sigo.Create(3), Sigo.Get1("a_leaf", "a_key"));
             Assert.AreEqual("phat", Sigo.Get1(name, "first"));
-            Assert.AreEqual(null, Sigo.Get1(name, "key_not_exist"));
+            Assert.AreEqual(Sigo.Create(3), Sigo.Get1(name, "key_not_exist"));
         }
 
         [Test]
@@ -107,22 +102,13 @@ namespace meta_store_tests
         }
 
         [Test]
-        public void ToKeys()
-        {
-            Assert.AreEqual(new string[] { }, Sigo.ToKeys(""));
-            Assert.AreEqual(new string[] { }, Sigo.ToKeys("/"));
-            Assert.AreEqual(new[] {"a"}, Sigo.ToKeys("/a"));
-            Assert.AreEqual(new[] {"a", "b"}, Sigo.ToKeys("a/b"));
-        }
-
-        [Test]
         public void Get()
         {
             Assert.AreEqual(user, Sigo.Get(user, ""));
             Assert.AreEqual(name, Sigo.Get(user, "name"));
             Assert.AreEqual("phat", Sigo.Get(user, "name/first"));
-            Assert.AreEqual(null, Sigo.Get(user, "name/first/not_a_key"));
-            Assert.AreEqual(null, Sigo.Get(user, "name/not_a_key"));
+            Assert.AreEqual(Sigo.Create(3), Sigo.Get(user, "name/first/not_a_key"));
+            Assert.AreEqual(Sigo.Create(3), Sigo.Get(user, "name/not_a_key"));
         }
 
         [Test]
