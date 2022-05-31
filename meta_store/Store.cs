@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace meta_store
@@ -53,7 +54,7 @@ namespace meta_store
 
         public Store At1(string key)
         {
-            children ??= new Dictionary<string, Store>();
+            children = children ?? new Dictionary<string, Store>();
 
             return children.TryGetValue(key, out var value)
                 ? value
@@ -66,7 +67,8 @@ namespace meta_store
 
         public Store At(string path)
         {
-            return Sigo.ToKeys(path).Aggregate(this, (current, k) => current.At1(k));
+            if (string.IsNullOrEmpty(path)) return this;
+            return !path.Contains('/') ? At1(path) : path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(this, (current, k) => current.At1(k));
         }
 
         public object Get1(string key)
@@ -78,27 +80,22 @@ namespace meta_store
 
         public object Get(string path)
         {
-            var ret = Sigo.Get(this.state, path);
-            Sigo.Freeze(ret);
-            return ret;
+            return Sigo.Freeze(Sigo.Get(this.state, path));
         }
 
         public object Get()
         {
-            Sigo.Freeze(state);
-            return state;
+            return Sigo.Freeze(state);
         }
 
         public void Set1(string key, object value)
         {
-            Sigo.Freeze(value);
-            this.state = Sigo.Set1(state, key, value);
+            this.state = Sigo.Set1(state, key, Sigo.Freeze(value));
         }
 
         public void Set(string path, object value)
         {
-            Sigo.Freeze(value);
-            this.state = Sigo.Set(state, path, value);
+            this.state = Sigo.Set(state, path, Sigo.Freeze(value));
         }
 
         // tương đương với root.Set(path, value)

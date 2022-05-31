@@ -21,7 +21,7 @@ namespace meta_store
             // TODO unsubcriber
             // TODO allow duplication
             // TODO first listener: sent == null;
-            listeners ??= new HashSet<Action<object>>();
+            listeners = listeners ?? new HashSet<Action<object>>();
             if (listeners.Add(action))
             {
                 var p = this;
