@@ -9,7 +9,7 @@ namespace meta_win
             InitializeComponent();
         }
 
-        string Cook(string src)
+        static string Cook(string src)
         {
             try
             {
@@ -27,5 +27,6 @@ namespace meta_win
             var src = srcTxt.Text;
             desTxt.Text = Cook(src);
         }
+
     }
 }

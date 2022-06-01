@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.desTxt = new System.Windows.Forms.RichTextBox();
             this.srcTxt = new System.Windows.Forms.RichTextBox();
+            this.desTxt = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -45,24 +45,14 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.desTxt);
+            this.splitContainer1.Panel1.Controls.Add(this.srcTxt);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.srcTxt);
+            this.splitContainer1.Panel2.Controls.Add(this.desTxt);
             this.splitContainer1.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer1.SplitterDistance = 266;
+            this.splitContainer1.SplitterDistance = 481;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // desTxt
-            // 
-            this.desTxt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.desTxt.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.desTxt.Location = new System.Drawing.Point(0, 0);
-            this.desTxt.Name = "desTxt";
-            this.desTxt.Size = new System.Drawing.Size(266, 450);
-            this.desTxt.TabIndex = 0;
-            this.desTxt.Text = "";
             // 
             // srcTxt
             // 
@@ -70,10 +60,22 @@
             this.srcTxt.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.srcTxt.Location = new System.Drawing.Point(0, 0);
             this.srcTxt.Name = "srcTxt";
-            this.srcTxt.Size = new System.Drawing.Size(530, 450);
+            this.srcTxt.Size = new System.Drawing.Size(481, 450);
             this.srcTxt.TabIndex = 0;
-            this.srcTxt.Text = "{x:1} * {0, y:1}";
+            this.srcTxt.Text = "user = {\n  name: {\n    first: \'phat\',\n    last: \'dam\'\n  },\n  age: 100\n  1/1: 11\n " +
+    " 1/2: 12\n  2/1: 21\n  2/2: 22\n}";
             this.srcTxt.TextChanged += new System.EventHandler(this.srcTxt_TextChanged);
+            // 
+            // desTxt
+            // 
+            this.desTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.desTxt.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.desTxt.Location = new System.Drawing.Point(0, 0);
+            this.desTxt.Name = "desTxt";
+            this.desTxt.Size = new System.Drawing.Size(315, 450);
+            this.desTxt.TabIndex = 0;
+            this.desTxt.Text = "";
+            this.desTxt.TextChanged += new System.EventHandler(this.srcTxt_TextChanged);
             // 
             // MetaWin
             // 
@@ -94,7 +96,7 @@
         #endregion
 
         private SplitContainer splitContainer1;
-        private RichTextBox desTxt;
         private RichTextBox srcTxt;
+        private RichTextBox desTxt;
     }
 }
