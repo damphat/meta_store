@@ -1,13 +1,16 @@
-﻿using System;
+﻿using meta_store.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace meta_store.Language
 {
+
+    // TODO recursive object: a = {x:1}; a = a * {0, a}   
     public class SigoParser
     {
         private readonly PeekableLexer lexer;
-        private object global = Sigo.Create(3);
+        private readonly Dictionary<string, object> global = new Dictionary<string, object>();
         private Token t;
 
         public SigoParser(string src)
@@ -51,7 +54,7 @@ namespace meta_store.Language
 
             while (true)
             {
-                list.Add(ParseValue());
+                list.Add(ParseExpr());
 
                 var sep = ParseObjectSeparator();
 
@@ -73,8 +76,8 @@ namespace meta_store.Language
             var key = t.Raw;
             Next();
             Next();
-            var value = Sigo.From(ParseValue());
-            global = Sigo.Set1(global, key, value);
+            var value = Sigo.From(ParseExpr());
+            global[key] = value;
             return value;
         }
 
@@ -107,7 +110,7 @@ namespace meta_store.Language
         {
             if (lexer.Peek(1).Kind == Kind.Eq)
             {
-                return ParseAssignment(); // return ISigo?
+                return ParseAssignment();
             }
 
             var raw = t.Raw;
@@ -126,7 +129,7 @@ namespace meta_store.Language
                     Next();
                     return double.PositiveInfinity;
                 default:
-                    if (((Sigo)global).TryGetValue(raw, out var value))
+                    if (global.TryGetValue(raw, out var value))
                     {
                         Next();
                         return value;
@@ -183,13 +186,13 @@ namespace meta_store.Language
                 if (t.Kind == Kind.Colon)
                 {
                     Next();
-                    var value = Sigo.From(ParseValue());
+                    var value = Sigo.From(ParseExpr());
                     ret = Sigo.Set(ret, keys, 0, value);
                 }
                 else
                 {
                     var last = keys[keys.Count - 1];
-                    if (((Sigo)global).TryGetValue(last, out var value))
+                    if (global.TryGetValue(last, out var value))
                     {
                         ret = Sigo.Set(ret, keys, 0, value);
                     }
@@ -267,9 +270,9 @@ namespace meta_store.Language
             {
                 key = (string)t.Value;
                 Next();
-                if (key.Contains("/"))
+                if (Paths.ShouldSplit(key))
                 {
-                    return key.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    return Paths.Split(key);
                 }
 
                 return key;
@@ -309,9 +312,9 @@ namespace meta_store.Language
                     throw new Exception(Expected("key"));
                 }
 
-                if (key is string)
+                if (key is string @string)
                 {
-                    keys.Add((string)key);
+                    keys.Add(@string);
                 }
                 else if (key is string[] ss)
                 {
@@ -343,7 +346,7 @@ namespace meta_store.Language
                     return ret;
                 }
 
-                ret = ParseValue();
+                ret = ParseExpr();
                 if (t.Kind == Kind.SemiColon)
                 {
                     Next();
@@ -366,6 +369,66 @@ namespace meta_store.Language
             return k == Kind.Minus ? -d : d;
         }
 
+        private object ParseMemberAccess()
+        {
+            var left = ParseValue();
+
+            while (t.Kind == Kind.Div)
+            {
+                Next();
+                if (t.Kind == Kind.Identifier)
+                {
+                    var key = t.Raw;
+                    Next();
+                    left = Sigo.Get1(left, key);
+
+                }
+                else if (t.Kind == Kind.Number)
+                {
+                    var key = t.Raw;
+                    Next();
+                    left = Sigo.Get1(left, key);
+                }
+                else
+                {
+                    throw new Exception(Expected("indentifier or int"));
+                }
+            }
+
+            return left;
+        }
+
+        private object ParseExpr()
+        {
+            var left = ParseMemberAccess();
+
+            while (t.Kind == Kind.Mul)
+            {
+                Next();
+                var right = ParseValue();
+                left = Sigo.Merge(left, right);
+            }
+
+            return left;
+        }
+
+        private object ParseParens()
+        {
+            Next();
+
+            var value = ParseExpr();
+
+            if (t.Kind == Kind.CloseParens)
+            {
+                Next();
+                return value;
+            }
+            else
+            {
+                throw new Exception(Expected(")"));
+            }
+        }
+
         private object ParseValue()
         {
             switch (t.Kind)
@@ -377,6 +440,7 @@ namespace meta_store.Language
                 case Kind.Open: return ParseObject();
                 case Kind.OpenBracket: return ParseArray();
                 case Kind.Identifier: return ParseIdentifier();
+                case Kind.OpenParens: return ParseParens();
                 default:
                     throw new Exception(Expected("value"));
             }
