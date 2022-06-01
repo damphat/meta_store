@@ -33,15 +33,9 @@ namespace meta_store.Utils
             }
         }
 
-        public static bool ShouldSplit(string path)
-        {
-            return path.IndexOf('/') != -1;
-        }
+        public static bool ShouldSplit(string path) => path.IndexOf('/') != -1;
 
-        public static string[] Split(string path)
-        {
-            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-        }
+        public static string[] Split(string path) => path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
         public static bool IsIdentifierOrInteger(string key)
         {

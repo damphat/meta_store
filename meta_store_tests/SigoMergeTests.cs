@@ -73,91 +73,75 @@ namespace meta_store_tests
         }
 
         [Test]
-        public void MergeTest_state_keep()
-        {
+        public void MergeTest_state_keep() =>
             // keep
             Assert.True(Sigo.Equals(
                     Sigo.State("x", 1),
                     Sigo.Merge(Sigo.State("x", 1), Sigo.Update("x", 1))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_state_change()
-        {
+        public void MergeTest_state_change() =>
             // change
             Assert.True(Sigo.Equals(
                     Sigo.State("x", 2),
                     Sigo.Merge(Sigo.State("x", 1), Sigo.Update("x", 2))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_state_add()
-        {
+        public void MergeTest_state_add() =>
             // add
             Assert.True(Sigo.Equals(
                     Sigo.State("x", 1, "y", 1),
                     Sigo.Merge(Sigo.State("x", 1), Sigo.Update("y", 1))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_state_remove()
-        {
+        public void MergeTest_state_remove() =>
             // remove
             Assert.True(Sigo.Equals(
                     Sigo.State("x", 1),
                     Sigo.Merge(Sigo.State("x", 1, "y", 1), Sigo.Update("y", Sigo.State()))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_update_keep()
-        {
+        public void MergeTest_update_keep() =>
             // keep
             Assert.True(Sigo.Equals(
                     Sigo.Update("x", 1),
                     Sigo.Merge(Sigo.Update("x", 1), Sigo.Update("x", 1))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_update_change()
-        {
+        public void MergeTest_update_change() =>
             // change
             Assert.True(Sigo.Equals(
                     Sigo.Update("x", 2),
                     Sigo.Merge(Sigo.Update("x", 1), Sigo.Update("x", 2))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_update_add()
-        {
+        public void MergeTest_update_add() =>
             // add
             Assert.True(Sigo.Equals(
                     Sigo.Update("x", 1, "y", 1),
                     Sigo.Merge(Sigo.Update("x", 1), Sigo.Update("y", 1))
                 )
             );
-        }
 
         [Test]
-        public void MergeTest_update_remove()
-        {
+        public void MergeTest_update_remove() =>
             // remove
             Assert.True(Sigo.Equals(
                     Sigo.Update("x", 1, "y", Sigo.Create(7)),
                     Sigo.Merge(Sigo.Update("x", 1, "y", 1), Sigo.Update("y", Sigo.Delete()))
                 )
             );
-        }
     }
 }

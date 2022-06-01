@@ -5,7 +5,7 @@ namespace meta_store
 {
     // TODO child biết parent, nhưng parent không cần biết child
     // ISSUE: should handler receive current values or waiting for the next value?
-    partial class Store
+    public partial class Store
     {
         private readonly object diff;
         private HashSet<Action<object>> listeners;
@@ -47,12 +47,11 @@ namespace meta_store
             }
         }
 
-        bool HasListeners() => listenerCount > 0;
-        bool HasBeenChanged() => dirty > 0;
-        bool NeedUpdate()
-        {
-            return HasListeners() && HasBeenChanged();
-        }
+        private bool HasListeners() => listenerCount > 0;
+
+        private bool HasBeenChanged() => dirty > 0;
+
+        private bool NeedUpdate() => HasListeners() && HasBeenChanged();
 
         // event
         // - cach 1: compare with last sent

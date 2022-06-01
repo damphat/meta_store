@@ -4,12 +4,9 @@ namespace meta_win
 {
     public partial class MetaWin : Form
     {
-        public MetaWin()
-        {
-            InitializeComponent();
-        }
+        public MetaWin() => InitializeComponent();
 
-        static string Cook(string src)
+        private static string Cook(string src)
         {
             try
             {

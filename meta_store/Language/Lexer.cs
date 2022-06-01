@@ -26,10 +26,7 @@ namespace meta_store.Language
             c = end < src.Length ? src[end] : Eof;
         }
 
-        private void Next()
-        {
-            c = ++end < src.Length ? src[end] : Eof;
-        }
+        private void Next() => c = ++end < src.Length ? src[end] : Eof;
 
         private void Next(int n)
         {

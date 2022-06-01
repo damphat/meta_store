@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace meta_store
 {
-    partial class Sigo
+    public partial class Sigo
     {
         public static Sigo From(IEnumerable list)
         {
@@ -30,6 +30,7 @@ namespace meta_store
         }
 
         public static object From(string o) => o;
+
         public static object From(Sigo o) => o;
 
         public static object From(object o)

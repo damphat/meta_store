@@ -67,57 +67,53 @@ namespace meta_store
 
         public Store At(string path)
         {
-            if (string.IsNullOrEmpty(path)) return this;
+            if (string.IsNullOrEmpty(path))
+            {
+                return this;
+            }
+
             return !Paths.ShouldSplit(path) ? At1(path) : Paths.Split(path).Aggregate(this, (current, k) => current.At1(k));
         }
 
         public object Get1(string key)
         {
-            var ret = Sigo.Get1(this.state, key);
+            var ret = Sigo.Get1(state, key);
             Sigo.Freeze(ret);
             return ret;
         }
 
-        public object Get(string path)
-        {
-            return Sigo.Freeze(Sigo.Get(this.state, path));
-        }
+        public object Get(string path) => Sigo.Freeze(Sigo.Get(state, path));
 
-        public object Get()
-        {
-            return Sigo.Freeze(state);
-        }
+        public object Get() => Sigo.Freeze(state);
 
-        public void Set1(string key, object value)
-        {
-            this.state = Sigo.Set1(state, key, Sigo.Freeze(value));
-        }
+        public void Set1(string key, object value) => state = Sigo.Set1(state, key, Sigo.Freeze(value));
 
-        public void Set(string path, object value)
-        {
-            this.state = Sigo.Set(state, path, Sigo.Freeze(value));
-        }
+        public void Set(string path, object value) => state = Sigo.Set(state, path, Sigo.Freeze(value));
 
         // tương đương với root.Set(path, value)
         public void Set(object value)
         {
             Sigo.Freeze(value);
 
-            if (this.state != value)
+            if (state != value)
             {
-                this.state = value;
+                state = value;
                 dirty++;
                 SetDown();
                 SetUp();
             }
         }
 
-        void SetUp()
+        private void SetUp()
         {
-            if (this.children == null) return;
+            if (children == null)
+            {
+                return;
+            }
+
             foreach (var child in children)
             {
-                var v = Sigo.Get1(this.state, child.Key);
+                var v = Sigo.Get1(state, child.Key);
                 if (child.Value.state != v)
                 {
                     child.Value.state = v;
@@ -127,9 +123,9 @@ namespace meta_store
             }
         }
 
-        void SetDown()
+        private void SetDown()
         {
-            var p = this.parent;
+            var p = parent;
             if (p != null)
             {
                 p.state = Sigo.Set1(p.state, key, state);

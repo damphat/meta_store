@@ -53,9 +53,6 @@ namespace meta_store.Language.Utils
         // FIXME ToDouble("1e1000") got different result
         // - .NET Framework throws OverflowException
         // - .NET Core return Infinity
-        public static double ToDouble(string str)
-        {
-            return double.Parse(str, CultureInfo.InvariantCulture);
-        }
+        public static double ToDouble(string str) => double.Parse(str, CultureInfo.InvariantCulture);
     }
 }

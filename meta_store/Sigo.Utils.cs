@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace meta_store
 {
-    partial class Sigo
+    public partial class Sigo
     {
         private static readonly Sigo[] Elements = Enumerable.Range(0, 8).Select(i => new Sigo(new Dictionary<string, object>(), i + Bits.F)).ToArray();
 
@@ -39,25 +39,13 @@ namespace meta_store
             return ret;
         }
 
-        public static object State(params object[] pvs)
-        {
-            return Create(Bits.MR, pvs);
-        }
+        public static object State(params object[] pvs) => Create(Bits.MR, pvs);
 
-        public static object Update(params object[] pvs)
-        {
-            return Create(0, pvs);
-        }
+        public static object Update(params object[] pvs) => Create(0, pvs);
 
-        public static object Delete()
-        {
-            return Create(Bits.MR);
-        }
+        public static object Delete() => Create(Bits.MR);
 
-        public static int GetFlag(object obj)
-        {
-            return obj is Sigo tree ? tree.flag : Bits.FPLMR;
-        }
+        public static int GetFlag(object obj) => obj is Sigo tree ? tree.flag : Bits.FPLMR;
 
         public static Sigo Add1(Sigo tree, string key, object value)
         {
@@ -167,12 +155,18 @@ namespace meta_store
                     }
                 }
             }
-            else return Add1(tree, key, value);
+            else
+            {
+                return Add1(tree, key, value);
+            }
         }
 
         public static object Set1(object obj, string key, object value)
         {
-            if (obj is Sigo tree) return Set1Tree(tree, key, value);
+            if (obj is Sigo tree)
+            {
+                return Set1Tree(tree, key, value);
+            }
 
             switch (GetFlag(value) & Bits.CPLMR)
             {
@@ -196,27 +190,32 @@ namespace meta_store
         {
             if (obj is Sigo tree)
             {
-                if (Bits.IsFrozen(tree.flag)) return obj;
+                if (Bits.IsFrozen(tree.flag))
+                {
+                    return obj;
+                }
+
                 tree.flag = Bits.AddFrozen(tree.flag);
-                foreach (var v in tree.Values) Freeze(v);
+                foreach (var v in tree.Values)
+                {
+                    Freeze(v);
+                }
             }
 
             return obj;
         }
 
-        public static bool IsFrozen(object obj)
-        {
-            return Bits.IsFrozen(GetFlag(obj));
-        }
+        public static bool IsFrozen(object obj) => Bits.IsFrozen(GetFlag(obj));
 
-        public static bool IsUpdate(object obj)
-        {
-            return (GetFlag(obj) & 1) == 0;
-        }
+        public static bool IsUpdate(object obj) => (GetFlag(obj) & 1) == 0;
 
         public static object Set(object obj, IReadOnlyList<string> keys, int from, object value)
         {
-            if (from >= keys.Count) return value;
+            if (from >= keys.Count)
+            {
+                return value;
+            }
+
             var key = keys[from];
 
             return Set1(obj, key, Set(Get1(obj, key), keys, from + 1, value));
@@ -291,15 +290,30 @@ namespace meta_store
         /// </summary>
         public static bool Equals(Sigo sa, Sigo sb)
         {
-            if (ReferenceEquals(sa, sb)) return true;
-            if (!Bits.IsSame(sa.flag, sb.flag)) return false;
+            if (ReferenceEquals(sa, sb))
+            {
+                return true;
+            }
+
+            if (!Bits.IsSame(sa.flag, sb.flag))
+            {
+                return false;
+            }
+
             var da = sa.data;
             var db = sb.data;
             foreach (var e in da)
             {
                 var k = e.Key;
-                if (db.TryGetValue(k, out var bk) == false) return false;
-                if (!Equals(e.Value, bk)) return false;
+                if (db.TryGetValue(k, out var bk) == false)
+                {
+                    return false;
+                }
+
+                if (!Equals(e.Value, bk))
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -309,19 +323,34 @@ namespace meta_store
         /// </summary>
         public static new bool Equals(object a, object b)
         {
-            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
             if (a is Sigo sa)
             {
                 if (b is Sigo sb)
                 {
-                    if (!Bits.IsSame(sa.flag, sb.flag)) return false;
+                    if (!Bits.IsSame(sa.flag, sb.flag))
+                    {
+                        return false;
+                    }
+
                     var da = sa.data;
                     var db = sb.data;
                     foreach (var e in da)
                     {
                         var k = e.Key;
-                        if (db.TryGetValue(k, out var bk) == false) return false;
-                        if (!Equals(e.Value, bk)) return false;
+                        if (db.TryGetValue(k, out var bk) == false)
+                        {
+                            return false;
+                        }
+
+                        if (!Equals(e.Value, bk))
+                        {
+                            return false;
+                        }
                     }
                     return true;
                 }
@@ -338,9 +367,21 @@ namespace meta_store
 
         public static bool Is(object a, object b)
         {
-            if (ReferenceEquals(a, b)) return true;
-            if (a is Sigo) return false;
-            if (b is Sigo) return false;
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (a is Sigo)
+            {
+                return false;
+            }
+
+            if (b is Sigo)
+            {
+                return false;
+            }
+
             return object.Equals(a, b);
         }
     }

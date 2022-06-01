@@ -14,27 +14,15 @@ namespace meta_store
             this.flag = flag;
         }
 
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-        {
-            return data.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => data.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)data).GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)data).GetEnumerator();
 
         public int Count => data.Count;
 
-        public bool ContainsKey(string key)
-        {
-            return data.ContainsKey(key);
-        }
+        public bool ContainsKey(string key) => data.ContainsKey(key);
 
-        public bool TryGetValue(string key, out object value)
-        {
-            return data.TryGetValue(key, out value);
-        }
+        public bool TryGetValue(string key, out object value) => data.TryGetValue(key, out value);
 
         public object this[string key] => data[key];
 

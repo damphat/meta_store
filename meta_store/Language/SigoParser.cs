@@ -19,10 +19,7 @@ namespace meta_store.Language
             t = lexer.Peek(0);
         }
 
-        private string Expected(string thing)
-        {
-            return $"{thing} expected, found {(t.Kind == Kind.Eof ? "eof" : $"'{t.Raw}'")} at {t.Start}";
-        }
+        private string Expected(string thing) => $"{thing} expected, found {(t.Kind == Kind.Eof ? "eof" : $"'{t.Raw}'")} at {t.Start}";
 
         private void Next()
         {
@@ -30,10 +27,7 @@ namespace meta_store.Language
             t = lexer.Peek(0);
         }
 
-        public object Parse()
-        {
-            return Sigo.From(ParseStatements());
-        }
+        public object Parse() => Sigo.From(ParseStatements());
 
         //public ISigo Parse(ISigo input, out ISigo output) {
         //    global = input.Freeze();

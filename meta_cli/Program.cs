@@ -1,7 +1,7 @@
 ﻿using meta_store;
 using System.Diagnostics;
 
-long Perf1S(Action action)
+static long Perf1S(Action action)
 {
     var sw = new Stopwatch();
     sw.Start();

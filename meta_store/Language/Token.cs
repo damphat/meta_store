@@ -24,10 +24,7 @@
 
         public object Value { get; private set; }
 
-        public override string ToString()
-        {
-            return $"{Kind}:'{Raw}'";
-        }
+        public override string ToString() => $"{Kind}:'{Raw}'";
 
         public void Reset(Kind kind, string src, in int start, in int end, in int separator, object value = null)
         {

@@ -4,17 +4,11 @@ namespace meta_store
 {
     public class Cache
     {
-        readonly List<KeyValuePair<string, object>> list = new List<KeyValuePair<string, object>>();
-        readonly Stack<int> indexes = new Stack<int>();
-        public void Push()
-        {
-            indexes.Push(list.Count);
-        }
+        private readonly List<KeyValuePair<string, object>> list = new List<KeyValuePair<string, object>>();
+        private readonly Stack<int> indexes = new Stack<int>();
+        public void Push() => indexes.Push(list.Count);
 
-        public void Add(string key, object value)
-        {
-            list.Add(new KeyValuePair<string, object>(key, value));
-        }
+        public void Add(string key, object value) => list.Add(new KeyValuePair<string, object>(key, value));
 
         public object Pop(object a)
         {

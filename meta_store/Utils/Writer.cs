@@ -88,10 +88,7 @@ namespace meta_store.Utils
         {
         }
 
-        private void WriteColon(StringBuilder sb)
-        {
-            sb.Append(Colon);
-        }
+        private void WriteColon(StringBuilder sb) => sb.Append(Colon);
 
         private void WriteSep(StringBuilder sb, int level, int place)
         {

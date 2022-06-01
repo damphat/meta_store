@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace meta_store
 {
-    partial class Sigo
+    public partial class Sigo
     {
         // Nguyên lý
         // 1) b che a
@@ -13,7 +13,11 @@ namespace meta_store
         // 4) object freeze khi duy chuyển vào/ra store
         public static object Merge(object a, object b)
         {
-            if (ReferenceEquals(a, b)) return a;
+            if (ReferenceEquals(a, b))
+            {
+                return a;
+            }
+
             if (b is Sigo sb)
             {
                 if (a is Sigo sa)
@@ -27,7 +31,14 @@ namespace meta_store
             }
             else
             {
-                if (object.Equals(a, b)) return a; else return b;
+                if (object.Equals(a, b))
+                {
+                    return a;
+                }
+                else
+                {
+                    return b;
+                }
             }
         }
 
@@ -38,7 +49,10 @@ namespace meta_store
             var rf = sigo.flag | lm;
             if (rf != sigo.flag)
             {
-                if (rf < 256) return Elements[rf & 7];
+                if (rf < 256)
+                {
+                    return Elements[rf & 7];
+                }
 
                 if (Bits.IsFrozen(rf))
                 {
@@ -68,7 +82,7 @@ namespace meta_store
             if (Bits.HasR(fb))
             {
                 var fr = (fa | fb) & 7;
-                Sigo ret = Elements[fr]; // TODO how to cache?
+                var ret = Elements[fr]; // TODO how to cache?
 
                 if (fb >= 256)
                 {
@@ -81,13 +95,28 @@ namespace meta_store
                         var bk = e.Value;
                         var rk = Merge(ak, bk);
 
-                        if (eqa & !ReferenceEquals(ak, rk)) eqa = false;
-                        if (eqb & !ReferenceEquals(bk, rk)) eqb = false;
+                        if (eqa & !ReferenceEquals(ak, rk))
+                        {
+                            eqa = false;
+                        }
+
+                        if (eqb & !ReferenceEquals(bk, rk))
+                        {
+                            eqb = false;
+                        }
 
                         ret = Add1(ret, k, rk);
                     }
-                    if (eqa && (ret.Count == a.Count)) return a; // {x:1, y:1} * {x: 1} =  {x:1}
-                    if (eqb) return b; // {x:1, y:1} * {x: 1} =  {x:1}
+                    if (eqa && (ret.Count == a.Count))
+                    {
+                        return a; // {x:1, y:1} * {x: 1} =  {x:1}
+                    }
+
+                    if (eqb)
+                    {
+                        return b; // {x:1, y:1} * {x: 1} =  {x:1}
+                    }
+
                     return ret;
                 }
 
@@ -96,7 +125,7 @@ namespace meta_store
             else
             {
                 var fr = (fa | fb) & 7;
-                Sigo ret = a;
+                var ret = a;
 
                 ret = AddLM(ret, Bits.LM & fb);
 
@@ -111,13 +140,28 @@ namespace meta_store
                         var bk = e.Value;
                         var rk = Merge(ak, bk);
 
-                        if (eqa & !ReferenceEquals(ak, rk)) eqa = false;
-                        if (eqb & !ReferenceEquals(bk, rk)) eqb = false;
+                        if (eqa & !ReferenceEquals(ak, rk))
+                        {
+                            eqa = false;
+                        }
+
+                        if (eqb & !ReferenceEquals(bk, rk))
+                        {
+                            eqb = false;
+                        }
 
                         ret = Set1Tree(ret, k, rk);
                     }
-                    if (eqa && (ret.Count == a.Count)) return a;
-                    if (eqb && (ret.Count == b.Count)) return b;
+                    if (eqa && (ret.Count == a.Count))
+                    {
+                        return a;
+                    }
+
+                    if (eqb && (ret.Count == b.Count))
+                    {
+                        return b;
+                    }
+
                     return ret;
                 }
 

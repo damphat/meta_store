@@ -39,7 +39,7 @@ namespace meta_store_tests
         [Test]
         public void Create()
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
                 Assert.AreEqual(i + 16, Sigo.GetFlag(Sigo.Create(i)));
             }

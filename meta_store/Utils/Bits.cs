@@ -76,119 +76,66 @@
         /// <summary>
         /// No children
         /// </summary>
-        public static bool IsEmpty(int f)
-        {
-            return (f & C) == 0;
-        }
+        public static bool IsEmpty(int f) => (f & C) == 0;
 
-        public static bool IsTree(int f)
-        {
-            return (f & P) == 0;
-        }
+        public static bool IsTree(int f) => (f & P) == 0;
 
-        public static bool IsLeaf(int f)
-        {
-            return (f & P) != 0;
-        }
+        public static bool IsLeaf(int f) => (f & P) != 0;
 
-        public static bool IsFrozen(int f)
-        {
-            return (f & F) != 0;
-        }
+        public static bool IsFrozen(int f) => (f & F) != 0;
 
-        public static int RemoveFrozen(int f)
-        {
-            return f & ~F;
-        }
+        public static int RemoveFrozen(int f) => f & ~F;
 
-        public static int AddFrozen(int f)
-        {
-            return f | F;
-        }
+        public static int AddFrozen(int f) => f | F;
 
         /// <summary>
         /// Check if we should really add the child to parent
         /// </summary>
-        public static bool IsDef(int pf, int cf)
-        {
-            return Def(pf) == (cf & (C + P + MR));
-        }
+        public static bool IsDef(int pf, int cf) => Def(pf) == (cf & (C + P + MR));
 
         /// <summary>
         /// Same count, same kind{leaf|tree}, same protons
         /// </summary>
-        public static bool IsSame(int fa, int fb)
-        {
-            return ((fa ^ fb) & (C + P + LMR)) == 0;
-        }
+        public static bool IsSame(int fa, int fb) => ((fa ^ fb) & (C + P + LMR)) == 0;
 
         /// <summary>
         /// Get protons bits
         /// </summary>
-        public static int Proton(int f)
-        {
-            return f & LMR;
-        }
+        public static int Proton(int f) => f & LMR;
 
         /// <summary>
         /// Children can change parent flags
         /// </summary>
-        public static int LeftEffect(int pf, int cf)
-        {
+        public static int LeftEffect(int pf, int cf) =>
             // issue: add proton L
-            return (cf & L) != 0 ? pf | LM : pf;
-        }
+            (cf & L) != 0 ? pf | LM : pf;
 
         /// <summary>
         /// Children count
         /// </summary>
-        public static int Count(int f)
-        {
-            return f >> N;
-        }
+        public static int Count(int f) => f >> N;
 
         /// <summary>
         /// count++
         /// </summary>
-        public static int CountUp(int f)
-        {
-            return f - C;
-        }
+        public static int CountUp(int f) => f - C;
 
         /// <summary>
         /// count--
         /// </summary>
-        public static int CountDown(int f)
-        {
-            return f + C;
-        }
+        public static int CountDown(int f) => f + C;
 
         /// <summary>
         /// Default children of sigos
         /// </summary>
-        public static int Def(int f)
-        {
-            return (f & R) != 0 ? MR : 0;
-        }
+        public static int Def(int f) => (f & R) != 0 ? MR : 0;
 
-        public static bool HasM(int f)
-        {
-            return (f & M) != 0;
-        }
+        public static bool HasM(int f) => (f & M) != 0;
 
-        public static bool HasR(int f)
-        {
-            return (f & R) != 0;
-        }
+        public static bool HasR(int f) => (f & R) != 0;
 
-        public static bool HasL(int f)
-        {
-            return (f & L) != 0;
-        }
+        public static bool HasL(int f) => (f & L) != 0;
 
-        public static bool SameProtons(int fa, int fb)
-        {
-            return ((fa ^ fb) & 7) == 0;
-        }
+        public static bool SameProtons(int fa, int fb) => ((fa ^ fb) & 7) == 0;
     }
 }
