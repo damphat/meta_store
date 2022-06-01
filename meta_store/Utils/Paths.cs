@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 
 namespace meta_store.Utils
 {
@@ -14,7 +13,7 @@ namespace meta_store.Utils
                 throw new ArgumentException($"'{key}' is not a valid key");
             }
 
-            if (key.Contains('/'))
+            if (Paths.ShouldSplit(key))
             {
                 throw new ArgumentException($"'{key}' contains '/'");
             }
@@ -36,7 +35,7 @@ namespace meta_store.Utils
 
         public static bool ShouldSplit(string path)
         {
-            return path.Contains('/');
+            return path.IndexOf('/') != -1;
         }
 
         public static string[] Split(string path)

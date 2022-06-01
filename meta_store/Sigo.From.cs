@@ -29,6 +29,9 @@ namespace meta_store
             return sigo;
         }
 
+        public static object From(string o) => o;
+        public static object From(Sigo o) => o;
+
         public static object From(object o)
         {
             switch (o)

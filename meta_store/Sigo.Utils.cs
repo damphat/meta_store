@@ -1,5 +1,4 @@
 ﻿using meta_store.Utils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -230,12 +229,12 @@ namespace meta_store
                 return value;
             }
 
-            if (!path.Contains('/'))
+            if (!Paths.ShouldSplit(path))
             {
                 return Set1(obj, path, value);
             }
 
-            var keys = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var keys = Paths.Split(path);
 
             return Set(obj, keys, 0, value);
         }
@@ -255,13 +254,6 @@ namespace meta_store
             }
         }
 
-        /// <summary>
-        /// <code>
-        /// sigo.Get("user/name") => sigo.Get1("user").Get1("name")
-        /// sigo.Get("user") => sigo.Get1("user")
-        /// sigo.Get("/") => sigo
-        /// </code>
-        /// </summary>
         public static object Get(object sigo, string path)
         {
             if (IsLooped(sigo))
@@ -274,12 +266,12 @@ namespace meta_store
                 return sigo;
             }
 
-            if (!path.Contains('/'))
+            if (!Paths.ShouldSplit(path))
             {
                 return Get1(sigo, path);
             }
 
-            var keys = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var keys = Paths.Split(path);
 
             foreach (var key in keys)
             {
@@ -297,18 +289,18 @@ namespace meta_store
         /// <summary>
         /// Deep equals
         /// </summary>
-        public static bool Equals(Sigo a, Sigo b)
+        public static bool Equals(Sigo sa, Sigo sb)
         {
-            if (ReferenceEquals(a, b)) return true;
-            if (a.flag != b.flag) return false;
-            if (a.data.Count != b.data.Count) return false;
-
-            foreach (var e in a.data)
+            if (ReferenceEquals(sa, sb)) return true;
+            if (!Bits.IsSame(sa.flag, sb.flag)) return false;
+            var da = sa.data;
+            var db = sb.data;
+            foreach (var e in da)
             {
                 var k = e.Key;
-                if (!Equals(e.Value, Sigo.Get1(b, k))) return false;
+                if (db.TryGetValue(k, out var bk) == false) return false;
+                if (!Equals(e.Value, bk)) return false;
             }
-
             return true;
         }
 
@@ -317,13 +309,38 @@ namespace meta_store
         /// </summary>
         public static new bool Equals(object a, object b)
         {
-            if (a is Sigo sa && b is Sigo sb) return Equals(sa, sb);
-            return object.Equals(a, b);
+            if (ReferenceEquals(a, b)) return true;
+            if (a is Sigo sa)
+            {
+                if (b is Sigo sb)
+                {
+                    if (!Bits.IsSame(sa.flag, sb.flag)) return false;
+                    var da = sa.data;
+                    var db = sb.data;
+                    foreach (var e in da)
+                    {
+                        var k = e.Key;
+                        if (db.TryGetValue(k, out var bk) == false) return false;
+                        if (!Equals(e.Value, bk)) return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return object.Equals(a, b);
+            }
         }
 
         public static bool Is(object a, object b)
         {
-            if (a is Sigo || b is Sigo) return ReferenceEquals(a, b);
+            if (ReferenceEquals(a, b)) return true;
+            if (a is Sigo) return false;
+            if (b is Sigo) return false;
             return object.Equals(a, b);
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using meta_store.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,7 +68,7 @@ namespace meta_store
         public Store At(string path)
         {
             if (string.IsNullOrEmpty(path)) return this;
-            return !path.Contains('/') ? At1(path) : path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(this, (current, k) => current.At1(k));
+            return !Paths.ShouldSplit(path) ? At1(path) : Paths.Split(path).Aggregate(this, (current, k) => current.At1(k));
         }
 
         public object Get1(string key)
