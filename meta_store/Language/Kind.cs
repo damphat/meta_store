@@ -23,6 +23,7 @@
         Div,
         Or,
         Question,
+        Dot,
 
         Eq,
         EqEq,

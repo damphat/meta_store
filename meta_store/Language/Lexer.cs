@@ -149,6 +149,7 @@ namespace meta_store.Language
                 case ';': return CharToken(Kind.SemiColon);
                 case ':': return CharToken(Kind.Colon);
                 case '?': return CharToken(Kind.Question);
+                case '.': return CharToken(Kind.Dot);
 
                 case '!':
                     {
