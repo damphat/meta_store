@@ -115,7 +115,7 @@
         }
 
         /// <summary>
-        /// Same count, same kind{leaf|tree}, same children count 
+        /// Same count, same kind{leaf|tree}, same protons
         /// </summary>
         public static bool IsSame(int fa, int fb)
         {
