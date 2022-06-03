@@ -302,7 +302,42 @@ namespace meta_store.Utils
                 case null: return sb.Append("null");
                 case bool b: return sb.Append(b ? "true" : "false");
                 case string s: return WriteString(sb, s);
-                case double d: return sb.Append(d.ToString(CultureInfo.InvariantCulture));
+                case int i: return sb.Append(i.ToString());
+                case float f:
+                    {
+                        var txt = f.ToString(CultureInfo.InvariantCulture);
+                        
+                        sb.Append(txt);
+
+                        if (float.IsNaN(f) || float.IsInfinity(f))
+                        {
+                            sb.Append("/*float*/");
+                        } else
+                        {
+                            sb.Append('f'); ;
+                        }
+                        return sb;
+                    }
+                case double f:
+                    {
+                        sb.Append(f.ToString(CultureInfo.InvariantCulture));
+                        if (double.IsNaN(f) || double.IsInfinity(f))
+                        {
+                            sb.Append("/*double*/");
+                        }
+                        else
+                        {
+                            sb.Append("d");
+                        }
+                        return sb;
+                    }
+                case sbyte i: return sb.Append(i.ToString()).Append("i1");
+                case short i: return sb.Append(i.ToString()).Append("i2");
+                case long i: return sb.Append(i.ToString()).Append("i8");
+                case byte i: return sb.Append(i.ToString()).Append("u1");
+                case ushort i: return sb.Append(i.ToString()).Append("u2");
+                case uint i: return sb.Append(i.ToString()).Append("u4");
+                case ulong i: return sb.Append(i.ToString()).Append("u8");
                 // FIXME sigo tree inside sigo leaf
                 case Sigo sigo: return WriteSigo(sb, sigo, level);
                 case IDictionary dict: return WriteObject(sb, dict, level);
