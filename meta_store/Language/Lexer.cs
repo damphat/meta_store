@@ -1,5 +1,6 @@
 ﻿using meta_store.Language.Utils;
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace meta_store.Language
@@ -42,7 +43,7 @@ namespace meta_store.Language
 
 
         private void ScanLineComment()
-        {
+        {           
             Next(2);
             while (c != '\r' && c != '\n' && c != Eof)
             {
@@ -229,7 +230,8 @@ namespace meta_store.Language
         // TODO parse 0xffff
         private Token NumberToken()
         {
-            Next();
+            var type = 'i';
+            Next();            
             while (Chars.IsDigit(c))
             {
                 Next();
@@ -237,6 +239,7 @@ namespace meta_store.Language
 
             if (c == '.')
             {
+                type = 'f';
                 var c1 = Peek(1);
                 if (Chars.IsDigit(c1))
                 {
@@ -250,6 +253,7 @@ namespace meta_store.Language
 
             if (c == 'e' || c == 'E')
             {
+                type = 'f';
                 var n = 1;
                 var cn = Peek(n);
                 if (cn == '+' || cn == '-')
@@ -268,7 +272,84 @@ namespace meta_store.Language
                 }
             }
 
-            var value = SigoConverter.ToDouble(src.Substring(start, end - start));
+            string raw = src.Substring(start, end - start);
+            object value = null;
+            try
+            {
+                switch (c)
+                {
+                    case 'i':
+                        Next();
+                        switch (c)
+                        {
+                            case '1':
+                                Next();
+                                value = sbyte.Parse(raw);
+                                break;
+                            case '2':
+                                Next();
+                                value = short.Parse(raw);
+                                break;
+                            case '4':
+                                Next();
+                                value = int.Parse(raw);
+                                break;
+                            case '8':
+                                Next();
+                                value = long.Parse(raw);
+                                break;
+                            default:
+                                value = int.Parse(raw);
+                                break;
+                        }
+                        break;
+                    case 'u':
+                        Next();
+                        switch (c)
+                        {
+                            case '1':
+                                Next();
+                                value = byte.Parse(raw);
+                                break;
+                            case '2':
+                                Next();
+                                value = ushort.Parse(raw);
+                                break;
+                            case '4':
+                                Next();
+                                value = uint.Parse(raw);
+                                break;
+                            case '8':
+                                Next();
+                                value = ulong.Parse(raw);
+                                break;
+                            default:
+                                value = uint.Parse(raw);
+                                break;
+                        }
+                        break;
+                    case 'f':
+                        Next();
+                        value = float.Parse(raw, CultureInfo.InvariantCulture);
+                        break;
+                    case 'd':
+                        Next();
+                        value = double.Parse(raw, CultureInfo.InvariantCulture);
+                        break;
+                    default:
+                        value = type == 'i' ? (object)int.Parse(raw) : (object)float.Parse(raw, CultureInfo.InvariantCulture);
+                        break;
+                }
+            } catch (Exception ex) {
+                value = ex;
+            }
+
+            if (Chars.IsIdentifierPart(c))
+            {
+                do { Next(); } while (Chars.IsIdentifierPart(c));
+                
+                value = new Exception($"Bad number");
+            }
 
             return CreateToken(Kind.Number, value);
         }
