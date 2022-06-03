@@ -7,6 +7,8 @@ namespace meta_store.Language
 {
 
     // TODO recursive object: a = {x:1}; a = a * {0, a}   
+    // TODO return Error instead of throwing Exception
+    // TODO string[i] is slow? should I cache string.Length
     public class SigoParser
     {
         private readonly PeekableLexer lexer;
@@ -19,7 +21,7 @@ namespace meta_store.Language
             t = lexer.Peek(0);
         }
 
-        private string Expected(string thing) => $"{thing} expected, found {(t.Kind == Kind.Eof ? "eof" : $"'{t.Raw}'")} at {t.Start}";
+        private string Expected(string thing) => $"{thing} expected, found {(t.Kind == Kind.Eof ? "eof" : $"'{t.Raw}'")} at {t.Start}";        
 
         private void Next()
         {
@@ -75,13 +77,20 @@ namespace meta_store.Language
             return value;
         }
 
-        private double ParseDouble()
+        private object ParseNumber()
         {
             if (t.Kind == Kind.Number)
             {
-                var d = (double)t.Value;
+                var n = t.Value;                
+
+                if(n is Exception ex)
+                {
+                    throw new Exception($"Can not parse number '{t.Raw}' at {t.Start}: {ex.Message}");
+                }
+
                 Next();
-                return d;
+
+                return n;
             }
 
             if (t.Kind == Kind.Identifier)
@@ -90,10 +99,10 @@ namespace meta_store.Language
                 {
                     case "Infinity":
                         Next();
-                        return double.PositiveInfinity;
+                        return float.PositiveInfinity;
                     case "NaN":
                         Next();
-                        return double.NaN;
+                        return float.NaN;
                 }
             }
 
@@ -118,10 +127,10 @@ namespace meta_store.Language
                     return false;
                 case "NaN":
                     Next();
-                    return double.NaN;
+                    return float.NaN;
                 case "Infinity":
                     Next();
-                    return double.PositiveInfinity;
+                    return float.PositiveInfinity;
                 default:
                     if (global.TryGetValue(raw, out var value))
                     {
@@ -131,13 +140,6 @@ namespace meta_store.Language
 
                     throw new Exception($"unexpected identifier '{raw}'");
             }
-        }
-
-        private object ParseNumber()
-        {
-            var ret = t.Value;
-            Next();
-            return ret;
         }
 
         private object ParseObject()
@@ -255,7 +257,14 @@ namespace meta_store.Language
 
             if (t.Kind == Kind.Number)
             {
-                key = ((double)t.Value).ToString(CultureInfo.InvariantCulture);
+                //key = ((double)t.Value).ToString(CultureInfo.InvariantCulture);
+                if (t.Value is int @int)
+                {
+                    key = @int.ToString();
+                } else
+                {
+                    throw new Exception(Expected("int"));
+                }
                 Next();
                 return key;
             }
@@ -359,8 +368,9 @@ namespace meta_store.Language
         {
             var k = t.Kind;
             Next();
-            var d = ParseDouble();
-            return k == Kind.Minus ? -d : d;
+            var d = ParseNumber();
+            if (k == Kind.Minus) d = Minus(d);
+            return d;            
         }
 
         private object ParseMemberAccess()
@@ -437,6 +447,23 @@ namespace meta_store.Language
                 case Kind.OpenParens: return ParseParens();
                 default:
                     throw new Exception(Expected("value"));
+            }
+        }
+
+        private object Minus(object o)
+        {
+            switch(o)
+            {
+                case int i: return -i;
+                case long i: return -i;
+                case float i: return -i;
+                case double i: return -i;
+                case sbyte i: return -i;
+                case short i: return -i;
+                default:
+                    {
+                        throw new Exception($"Cannot apply unary '-' to {o.GetType().Name}");
+                    }
             }
         }
     }
