@@ -97,7 +97,6 @@ namespace meta_store
             }
         }
 
-
         public static Sigo Set1Tree(Sigo tree, string key, object value)
         {
             if (tree.TryGetValue(key, out var old))
@@ -184,6 +183,11 @@ namespace meta_store
             }
 
             return Create(Bits.MR);
+        }
+
+        public static object Get1(Sigo tree, string key)
+        {
+            return tree.TryGetValue(key, out var value) ? value : Create((tree.flag & Bits.R) * Bits.MR);
         }
 
         public static object Freeze(object obj)
