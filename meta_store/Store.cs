@@ -6,48 +6,8 @@ namespace meta_store
 {
     public partial class Store
     {
-        public Store Parent => parent;
-
-        public Store Root
-        {
-            get
-            {
-                var ret = this;
-
-                while (ret.parent != null)
-                {
-                    ret = ret.parent;
-                }
-                return ret;
-            }
-        }
-
-        public string Path
-        {
-            get
-            {
-                var store = this;
-                var path = store.key ?? "";
-
-                store = store.parent;
-
-                while (store != null)
-                {
-                    if (!string.IsNullOrEmpty(store.key))
-                    {
-                        path = store.key + '/' + path;
-                    }
-
-                    store = store.parent;
-                }
-
-                return path;
-            }
-        }
-
-        public string Key => key;
-
         private object state;
+        private object action;
         private Store parent;
         private string key;
         private Dictionary<string, Store> children;
@@ -72,7 +32,7 @@ namespace meta_store
                 return this;
             }
 
-            return !Paths.ShouldSplit(path) ? At1(path) : Paths.Split(path).Aggregate(this, (current, k) => current.At1(k));
+            return Paths.ShouldSplit(path) ? Paths.Split(path).Aggregate(this, (current, k) => current.At1(k)) : At1(path);
         }
 
         public object Get1(string key)
