@@ -23,6 +23,11 @@ namespace meta_win
         {
             var src = srcTxt.Text;
             desTxt.Text = Cook(src);
+            var level = Sigo.level;
+            if (level != null)
+            {
+                debugTxt.Text = level.ToDebugString();
+            }            
         }
 
     }

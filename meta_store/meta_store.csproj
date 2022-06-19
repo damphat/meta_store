@@ -4,11 +4,20 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Sigo.Utils.Merge.cs" />
+  </ItemGroup>
+
 
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>meta_store_tests</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Include="Sigo.Utils.Merge.cs" />
 	</ItemGroup>
 
 </Project>
